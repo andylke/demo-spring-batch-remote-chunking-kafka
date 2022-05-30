@@ -12,30 +12,18 @@ public class RandomUserToUserProcessor implements ItemProcessor<RandomUser, User
   public User process(RandomUser item) throws Exception {
     final User user = new User();
 
-    user.setUsername(item.getLogin().getUsername());
-    user.setPassword(item.getLogin().getPassword());
-    user.setName(
-        item.getName().getTitle()
-            + " "
-            + item.getName().getFirst()
-            + " "
-            + item.getName().getLast());
+    user.setUsername(item.getLoginUsername());
+    user.setPassword(item.getLoginPassword());
+    user.setName(item.getNameTitle() + " " + item.getNameFirst() + " " + item.getNameLast());
     user.setEmail(item.getEmail());
-    user.setAddress(
-        item.getLocation().getStreet().getNumber()
-            + " "
-            + item.getLocation().getStreet().getName());
-    user.setCity(item.getLocation().getCity());
-    user.setCountry(item.getLocation().getCountry());
-    user.setPostcode(item.getLocation().getPostcode());
+    user.setAddress(item.getLocationStreetNumber() + " " + item.getLocationStreetName());
+    user.setCity(item.getLocationCity());
+    user.setCountry(item.getLocationCountry());
+    user.setPostcode(item.getLocationPostcode());
     user.setCoordinates(
-        item.getLocation().getCoordinates().getLongitude()
-            + " "
-            + item.getLocation().getCoordinates().getLatitude());
+        item.getLocationCoordinatesLongitude() + " " + item.getLocationCoordinatesLatitude());
     user.setTimezone(
-        item.getLocation().getTimezone().getOffset()
-            + " "
-            + item.getLocation().getTimezone().getDescription());
+        item.getLocationTimezoneOffset() + " " + item.getLocationTimezoneDescription());
     user.setNationality(item.getNat());
 
     user.setCreatedBy(InetAddress.getLocalHost().getHostAddress());

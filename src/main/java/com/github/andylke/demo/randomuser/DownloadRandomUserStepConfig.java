@@ -1,15 +1,15 @@
 package com.github.andylke.demo.randomuser;
 
-import org.apache.commons.lang3.StringUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
-import org.springframework.batch.item.file.FlatFileItemWriter;
-import org.springframework.batch.item.file.builder.FlatFileItemWriterBuilder;
+import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.item.data.RepositoryItemWriter;
+import org.springframework.batch.item.data.builder.RepositoryItemWriterBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.FileSystemResource;
 
 @Configuration
 public class DownloadRandomUserStepConfig {
@@ -47,13 +47,18 @@ public class DownloadRandomUserStepConfig {
 
   @Autowired private DownloadRandomUserProperties properties;
 
+  @Autowired private RandomUserRepository randomUserRepository;
+
+  @Autowired private ModelMapper modelMapper;
+
   @Bean
   public Step downloadRandomUserStep() {
     return stepBuilderFactory
         .get("downloadRandomUserFile")
-        .<RandomUser, RandomUser>chunk(properties.getChunkSize())
+        .<RandomUserPayload, RandomUser>chunk(properties.getChunkSize())
         .reader(randomUserRestServiceReader())
-        .writer(randomUserFileWriter())
+        .processor(randomUserPayloadToRandomUserProcessor())
+        .writer(randomUserRepositoryWriter())
         .build();
   }
 
@@ -63,18 +68,19 @@ public class DownloadRandomUserStepConfig {
     return new RandomUserRestServiceReader(properties.getTotalPage(), properties.getPageSize());
   }
 
+  private ItemProcessor<? super RandomUserPayload, ? extends RandomUser>
+      randomUserPayloadToRandomUserProcessor() {
+    return new ItemProcessor<RandomUserPayload, RandomUser>() {
+
+      @Override
+      public RandomUser process(RandomUserPayload item) throws Exception {
+        return modelMapper.map(item, RandomUser.class);
+      }
+    };
+  }
+
   @Bean
-  @StepScope
-  public FlatFileItemWriter<? super RandomUser> randomUserFileWriter() {
-    return new FlatFileItemWriterBuilder<RandomUser>()
-        .name("randomUserFileWriter")
-        .resource(new FileSystemResource(RANDOM_USER_FILE_PATH))
-        .encoding("UTF-8")
-        .shouldDeleteIfExists(true)
-        .delimited()
-        .delimiter("|")
-        .names(RANDOM_USER_FIELD_NAMES)
-        .headerCallback(callback -> callback.write(StringUtils.join(RANDOM_USER_FIELD_NAMES, ",")))
-        .build();
+  public RepositoryItemWriter<RandomUser> randomUserRepositoryWriter() {
+    return new RepositoryItemWriterBuilder<RandomUser>().repository(randomUserRepository).build();
   }
 }

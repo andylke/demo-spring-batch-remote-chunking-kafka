@@ -1,15 +1,17 @@
 package com.github.andylke.demo.randomuser;
 
+import java.util.Map;
+
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.integration.chunk.ChunkResponse;
 import org.springframework.batch.integration.chunk.RemoteChunkingManagerStepBuilderFactory;
-import org.springframework.batch.item.file.FlatFileItemReader;
-import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
+import org.springframework.batch.item.data.RepositoryItemReader;
+import org.springframework.batch.item.data.builder.RepositoryItemReaderBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.FileSystemResource;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.format.support.FormattingConversionService;
 import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.channel.QueueChannel;
@@ -28,12 +30,14 @@ public class ImportRandomUserManagerStepConfig {
 
   @Autowired private FormattingConversionService conversionService;
 
+  @Autowired private RandomUserRepository randomUserRepository;
+
   @Bean
   public Step importRandomUserManagerStep() {
     return stepBuilderFactory
         .get("importRandomUserManager")
         .chunk(properties.getChunkSize())
-        .reader(randomUserFileReader())
+        .reader(randomUserRepositoryReader())
         .outputChannel(importRandomUserMasterRequestsChannel())
         .inputChannel(importRandomUserMasterRepliesChannel())
         .build();
@@ -41,15 +45,12 @@ public class ImportRandomUserManagerStepConfig {
 
   @Bean
   @StepScope
-  public FlatFileItemReader<? extends RandomUser> randomUserFileReader() {
-    return new FlatFileItemReaderBuilder<RandomUser>()
-        .name("randomUserFileReader")
-        .resource(new FileSystemResource(DownloadRandomUserStepConfig.RANDOM_USER_FILE_PATH))
-        .linesToSkip(1)
-        .delimited()
-        .delimiter("|")
-        .names(DownloadRandomUserStepConfig.RANDOM_USER_FIELD_NAMES)
-        .targetType(RandomUser.class)
+  public RepositoryItemReader<RandomUser> randomUserRepositoryReader() {
+    return new RepositoryItemReaderBuilder<RandomUser>()
+        .name("randomUserRepositoryReader")
+        .repository(randomUserRepository)
+        .methodName("findAll")
+        .sorts(Map.of("id", Direction.ASC))
         .build();
   }
 

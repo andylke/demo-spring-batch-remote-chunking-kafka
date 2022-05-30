@@ -2,24 +2,51 @@ package com.github.andylke.demo.randomuser;
 
 import java.io.Serializable;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
+@Entity
 public class RandomUser implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+
   private String gender;
-
-  private Name name = new Name();
-
-  private Location location = new Location();
-
+  private String nameTitle;
+  private String nameFirst;
+  private String nameLast;
+  private String locationStreetNumber;
+  private String locationStreetName;
+  private String locationCity;
+  private String locationState;
+  private String locationCountry;
+  private String locationPostcode;
+  private String locationCoordinatesLatitude;
+  private String locationCoordinatesLongitude;
+  private String locationTimezoneOffset;
+  private String locationTimezoneDescription;
   private String email;
-
-  private Login login = new Login();
-
+  private String loginUuid;
+  private String loginUsername;
+  private String loginPassword;
+  private String loginSalt;
+  private String loginMd5;
+  private String loginSha1;
+  private String loginSha256;
   private String nat;
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
 
   public String getGender() {
     return gender;
@@ -29,20 +56,108 @@ public class RandomUser implements Serializable {
     this.gender = gender;
   }
 
-  public Name getName() {
-    return name;
+  public String getNameTitle() {
+    return nameTitle;
   }
 
-  public void setName(Name name) {
-    this.name = name;
+  public void setNameTitle(String nameTitle) {
+    this.nameTitle = nameTitle;
   }
 
-  public Location getLocation() {
-    return location;
+  public String getNameFirst() {
+    return nameFirst;
   }
 
-  public void setLocation(Location location) {
-    this.location = location;
+  public void setNameFirst(String nameFirst) {
+    this.nameFirst = nameFirst;
+  }
+
+  public String getNameLast() {
+    return nameLast;
+  }
+
+  public void setNameLast(String nameLast) {
+    this.nameLast = nameLast;
+  }
+
+  public String getLocationStreetNumber() {
+    return locationStreetNumber;
+  }
+
+  public void setLocationStreetNumber(String locationStreetNumber) {
+    this.locationStreetNumber = locationStreetNumber;
+  }
+
+  public String getLocationStreetName() {
+    return locationStreetName;
+  }
+
+  public void setLocationStreetName(String locationStreetName) {
+    this.locationStreetName = locationStreetName;
+  }
+
+  public String getLocationCity() {
+    return locationCity;
+  }
+
+  public void setLocationCity(String locationCity) {
+    this.locationCity = locationCity;
+  }
+
+  public String getLocationState() {
+    return locationState;
+  }
+
+  public void setLocationState(String locationState) {
+    this.locationState = locationState;
+  }
+
+  public String getLocationCountry() {
+    return locationCountry;
+  }
+
+  public void setLocationCountry(String locationCountry) {
+    this.locationCountry = locationCountry;
+  }
+
+  public String getLocationPostcode() {
+    return locationPostcode;
+  }
+
+  public void setLocationPostcode(String locationPostcode) {
+    this.locationPostcode = locationPostcode;
+  }
+
+  public String getLocationCoordinatesLatitude() {
+    return locationCoordinatesLatitude;
+  }
+
+  public void setLocationCoordinatesLatitude(String locationCoordinatesLatitude) {
+    this.locationCoordinatesLatitude = locationCoordinatesLatitude;
+  }
+
+  public String getLocationCoordinatesLongitude() {
+    return locationCoordinatesLongitude;
+  }
+
+  public void setLocationCoordinatesLongitude(String locationCoordinatesLongitude) {
+    this.locationCoordinatesLongitude = locationCoordinatesLongitude;
+  }
+
+  public String getLocationTimezoneOffset() {
+    return locationTimezoneOffset;
+  }
+
+  public void setLocationTimezoneOffset(String locationTimezoneOffset) {
+    this.locationTimezoneOffset = locationTimezoneOffset;
+  }
+
+  public String getLocationTimezoneDescription() {
+    return locationTimezoneDescription;
+  }
+
+  public void setLocationTimezoneDescription(String locationTimezoneDescription) {
+    this.locationTimezoneDescription = locationTimezoneDescription;
   }
 
   public String getEmail() {
@@ -53,12 +168,60 @@ public class RandomUser implements Serializable {
     this.email = email;
   }
 
-  public Login getLogin() {
-    return login;
+  public String getLoginUuid() {
+    return loginUuid;
   }
 
-  public void setLogin(Login login) {
-    this.login = login;
+  public void setLoginUuid(String loginUuid) {
+    this.loginUuid = loginUuid;
+  }
+
+  public String getLoginUsername() {
+    return loginUsername;
+  }
+
+  public void setLoginUsername(String loginUsername) {
+    this.loginUsername = loginUsername;
+  }
+
+  public String getLoginPassword() {
+    return loginPassword;
+  }
+
+  public void setLoginPassword(String loginPassword) {
+    this.loginPassword = loginPassword;
+  }
+
+  public String getLoginSalt() {
+    return loginSalt;
+  }
+
+  public void setLoginSalt(String loginSalt) {
+    this.loginSalt = loginSalt;
+  }
+
+  public String getLoginMd5() {
+    return loginMd5;
+  }
+
+  public void setLoginMd5(String loginMd5) {
+    this.loginMd5 = loginMd5;
+  }
+
+  public String getLoginSha1() {
+    return loginSha1;
+  }
+
+  public void setLoginSha1(String loginSha1) {
+    this.loginSha1 = loginSha1;
+  }
+
+  public String getLoginSha256() {
+    return loginSha256;
+  }
+
+  public void setLoginSha256(String loginSha256) {
+    this.loginSha256 = loginSha256;
   }
 
   public String getNat() {
@@ -67,280 +230,5 @@ public class RandomUser implements Serializable {
 
   public void setNat(String nat) {
     this.nat = nat;
-  }
-
-  @Override
-  public String toString() {
-    return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
-  }
-
-  public static class Name implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
-    private String title;
-
-    private String first;
-
-    private String last;
-
-    public String getTitle() {
-      return title;
-    }
-
-    public void setTitle(String title) {
-      this.title = title;
-    }
-
-    public String getFirst() {
-      return first;
-    }
-
-    public void setFirst(String first) {
-      this.first = first;
-    }
-
-    public String getLast() {
-      return last;
-    }
-
-    public void setLast(String last) {
-      this.last = last;
-    }
-
-    @Override
-    public String toString() {
-      return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
-    }
-  }
-
-  public static class Location implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
-    private Street street = new Street();
-
-    private String city;
-
-    private String state;
-
-    private String country;
-
-    private String postcode;
-
-    private Coordinates coordinates = new Coordinates();
-
-    private Timezone timezone = new Timezone();
-
-    public Street getStreet() {
-      return street;
-    }
-
-    public void setStreet(Street street) {
-      this.street = street;
-    }
-
-    public String getCity() {
-      return city;
-    }
-
-    public void setCity(String city) {
-      this.city = city;
-    }
-
-    public String getState() {
-      return state;
-    }
-
-    public void setState(String state) {
-      this.state = state;
-    }
-
-    public String getCountry() {
-      return country;
-    }
-
-    public void setCountry(String country) {
-      this.country = country;
-    }
-
-    public String getPostcode() {
-      return postcode;
-    }
-
-    public void setPostcode(String postcode) {
-      this.postcode = postcode;
-    }
-
-    public Coordinates getCoordinates() {
-      return coordinates;
-    }
-
-    public void setCoordinates(Coordinates coordinates) {
-      this.coordinates = coordinates;
-    }
-
-    public Timezone getTimezone() {
-      return timezone;
-    }
-
-    public void setTimezone(Timezone timezone) {
-      this.timezone = timezone;
-    }
-  }
-
-  public static class Street implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
-    private String number;
-
-    private String name;
-
-    public String getNumber() {
-      return number;
-    }
-
-    public void setNumber(String number) {
-      this.number = number;
-    }
-
-    public String getName() {
-      return name;
-    }
-
-    public void setName(String name) {
-      this.name = name;
-    }
-  }
-
-  public static class Coordinates implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
-    private String latitude;
-
-    private String longitude;
-
-    public String getLatitude() {
-      return latitude;
-    }
-
-    public void setLatitude(String latitude) {
-      this.latitude = latitude;
-    }
-
-    public String getLongitude() {
-      return longitude;
-    }
-
-    public void setLongitude(String longitude) {
-      this.longitude = longitude;
-    }
-  }
-
-  public static class Timezone implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
-    private String offset;
-
-    private String description;
-
-    public String getOffset() {
-      return offset;
-    }
-
-    public void setOffset(String offset) {
-      this.offset = offset;
-    }
-
-    public String getDescription() {
-      return description;
-    }
-
-    public void setDescription(String description) {
-      this.description = description;
-    }
-  }
-
-  public static class Login implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
-    private String uuid;
-
-    private String username;
-
-    private String password;
-
-    private String salt;
-
-    private String md5;
-
-    private String sha1;
-
-    private String sha256;
-
-    public String getUuid() {
-      return uuid;
-    }
-
-    public void setUuid(String uuid) {
-      this.uuid = uuid;
-    }
-
-    public String getUsername() {
-      return username;
-    }
-
-    public void setUsername(String username) {
-      this.username = username;
-    }
-
-    public String getPassword() {
-      return password;
-    }
-
-    public void setPassword(String password) {
-      this.password = password;
-    }
-
-    public String getSalt() {
-      return salt;
-    }
-
-    public void setSalt(String salt) {
-      this.salt = salt;
-    }
-
-    public String getMd5() {
-      return md5;
-    }
-
-    public void setMd5(String md5) {
-      this.md5 = md5;
-    }
-
-    public String getSha1() {
-      return sha1;
-    }
-
-    public void setSha1(String sha1) {
-      this.sha1 = sha1;
-    }
-
-    public String getSha256() {
-      return sha256;
-    }
-
-    public void setSha256(String sha256) {
-      this.sha256 = sha256;
-    }
-
-    @Override
-    public String toString() {
-      return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
-    }
   }
 }

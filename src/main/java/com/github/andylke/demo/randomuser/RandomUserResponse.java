@@ -8,9 +8,9 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class RandomUserResponse {
 
-  private List<RandomUser> results = new ArrayList<RandomUser>();
+  private List<RandomUserPayload> results = new ArrayList<RandomUserPayload>();
 
-  public List<RandomUser> getResults() {
+  public List<RandomUserPayload> getResults() {
     return results;
   }
 

@@ -10,11 +10,11 @@ import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
 import org.springframework.web.client.RestTemplate;
 
-public class RandomUserRestServiceReader implements ItemReader<RandomUser> {
+public class RandomUserRestServiceReader implements ItemReader<RandomUserPayload> {
 
   private RestTemplate restTemplate = new RestTemplate();
 
-  private Queue<RandomUser> randomUsers = new LinkedList<RandomUser>();
+  private Queue<RandomUserPayload> randomUsers = new LinkedList<RandomUserPayload>();
 
   private int currentPage = 1;
 
@@ -28,7 +28,7 @@ public class RandomUserRestServiceReader implements ItemReader<RandomUser> {
   }
 
   @Override
-  public RandomUser read()
+  public RandomUserPayload read()
       throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
     if (randomUsers.isEmpty()) {
       if (currentPage > totalPage) {
@@ -39,7 +39,7 @@ public class RandomUserRestServiceReader implements ItemReader<RandomUser> {
     return randomUsers.poll();
   }
 
-  private List<RandomUser> getRandomUsers(int page, int size) {
+  private List<RandomUserPayload> getRandomUsers(int page, int size) {
     return restTemplate
         .getForEntity(
             "https://randomuser.me/api/?inc=name,location,gender,email,login,nat&page="
