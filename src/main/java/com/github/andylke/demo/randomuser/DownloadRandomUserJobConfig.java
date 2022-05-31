@@ -15,14 +15,16 @@ import org.springframework.context.annotation.Import;
 @Import({DownloadRandomUserStepConfig.class})
 public class DownloadRandomUserJobConfig {
 
+  public static final String JOB_NAME = "downloadRandomUser";
+
   @Autowired private JobBuilderFactory jobBuilderFactory;
 
   @Autowired private Step downloadRandomUserStep;
 
-  @Bean
+  @Bean(JOB_NAME)
   public Job downloadRandomUserJob() {
     return jobBuilderFactory
-        .get("downloadRandomUser")
+        .get(JOB_NAME)
         .incrementer(new RunIdIncrementer())
         .start(downloadRandomUserStep)
         .build();

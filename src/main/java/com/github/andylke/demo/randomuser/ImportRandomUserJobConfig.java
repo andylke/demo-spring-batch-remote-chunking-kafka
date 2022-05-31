@@ -15,11 +15,13 @@ import org.springframework.context.annotation.Import;
 @Import({ImportRandomUserManagerStepConfig.class})
 public class ImportRandomUserJobConfig {
 
+  public static final String JOB_NAME = "importRandomUser";
+
   @Autowired private JobBuilderFactory jobBuilderFactory;
 
   @Autowired private Step importRandomUserManagerStep;
 
-  @Bean
+  @Bean(JOB_NAME)
   public Job importRandomUserJob() {
     return jobBuilderFactory
         .get("importRandomUser")

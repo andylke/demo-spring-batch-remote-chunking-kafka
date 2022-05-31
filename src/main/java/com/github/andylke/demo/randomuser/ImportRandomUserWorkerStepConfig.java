@@ -56,7 +56,9 @@ public class ImportRandomUserWorkerStepConfig {
   public IntegrationFlow importRandomUserWorkerRequestsFlow(
       ConsumerFactory<String, String> consumerFactory) {
     return IntegrationFlows.from(
-            Kafka.messageDrivenChannelAdapter(consumerFactory, "import-random-user-requests"))
+            Kafka.messageDrivenChannelAdapter(
+                consumerFactory,
+                ImportRandomUserManagerStepConfig.IMPORT_RANDOM_USER_REQUESTS_TOPIC))
         .transform(source -> conversionService.convert(source, ChunkRequest.class))
         .channel(importRandomUserWorkerRequestsChannel())
         .get();
@@ -72,7 +74,9 @@ public class ImportRandomUserWorkerStepConfig {
       KafkaTemplate<String, String> kafkaTemplate) {
     return IntegrationFlows.from(importRandomUserWorkerRepliesChannel())
         .transform(source -> conversionService.convert(source, byte[].class))
-        .handle(Kafka.outboundChannelAdapter(kafkaTemplate).topic("import-random-user-replies"))
+        .handle(
+            Kafka.outboundChannelAdapter(kafkaTemplate)
+                .topic(ImportRandomUserManagerStepConfig.IMPORT_RANDOM_USER_REPLIES_TOPIC))
         .get();
   }
 }

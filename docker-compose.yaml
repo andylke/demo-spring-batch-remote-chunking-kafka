@@ -37,3 +37,29 @@ services:
       - '3306:3306'
     volumes:
       - ./mysql-init.sql:/docker-entrypoint-initdb.d/mysql-init.sql
+      
+  demo-spring-batch-remote-chunking-kafka:
+    image: demo-spring-batch-remote-chunking-kafka:0.0.1-SNAPSHOT
+    depends_on:
+      - kafka
+      - mysql   
+    deploy:
+      replicas: 1
+    restart: always
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/demo
+      SPRING_DATASOURCE_USERNAME: mysqluser
+      SPRING_DATASOURCE_PASSWORD: mysqluserpassword
+      SPRING_KAFKA_BOOTSTRAP-SERVERS: kafka:9092
+      IMPORT_RANDOM_USER_PARTITIONS: 1
+    ports:
+      - '8080'
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - demo-spring-batch-remote-chunking-kafka
+    ports:
+      - "9090:9090"

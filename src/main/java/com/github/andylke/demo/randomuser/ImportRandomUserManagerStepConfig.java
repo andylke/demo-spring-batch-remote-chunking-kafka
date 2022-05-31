@@ -2,6 +2,7 @@ package com.github.andylke.demo.randomuser;
 
 import java.util.Map;
 
+import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.integration.chunk.ChunkResponse;
@@ -18,11 +19,16 @@ import org.springframework.integration.channel.QueueChannel;
 import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.kafka.dsl.Kafka;
+import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 
 @Configuration
 public class ImportRandomUserManagerStepConfig {
+
+  public static final String IMPORT_RANDOM_USER_REQUESTS_TOPIC = "import-random-user-requests";
+
+  public static final String IMPORT_RANDOM_USER_REPLIES_TOPIC = "import-random-user-replies";
 
   @Autowired private RemoteChunkingManagerStepBuilderFactory stepBuilderFactory;
 
@@ -40,6 +46,7 @@ public class ImportRandomUserManagerStepConfig {
         .reader(randomUserRepositoryReader())
         .outputChannel(importRandomUserMasterRequestsChannel())
         .inputChannel(importRandomUserMasterRepliesChannel())
+        .throttleLimit(properties.getThrottleLimit())
         .build();
   }
 
@@ -64,8 +71,16 @@ public class ImportRandomUserManagerStepConfig {
       KafkaTemplate<String, String> kafkaTemplate) {
     return IntegrationFlows.from(importRandomUserMasterRequestsChannel())
         .transform(source -> conversionService.convert(source, byte[].class))
-        .handle(Kafka.outboundChannelAdapter(kafkaTemplate).topic("import-random-user-requests"))
+        .handle(
+            Kafka.outboundChannelAdapter(kafkaTemplate).topic(IMPORT_RANDOM_USER_REQUESTS_TOPIC))
         .get();
+  }
+
+  @Bean
+  public NewTopic importRandomUserRequestsTopic() {
+    return TopicBuilder.name(IMPORT_RANDOM_USER_REQUESTS_TOPIC)
+        .partitions(properties.getPartitions())
+        .build();
   }
 
   @Bean
@@ -77,9 +92,16 @@ public class ImportRandomUserManagerStepConfig {
   public IntegrationFlow importRandomUserMasterRepliesFlow(
       ConsumerFactory<String, String> consumerFactory) {
     return IntegrationFlows.from(
-            Kafka.messageDrivenChannelAdapter(consumerFactory, "import-random-user-replies"))
+            Kafka.messageDrivenChannelAdapter(consumerFactory, IMPORT_RANDOM_USER_REPLIES_TOPIC))
         .transform(source -> conversionService.convert(source, ChunkResponse.class))
         .channel(importRandomUserMasterRepliesChannel())
         .get();
+  }
+
+  @Bean
+  public NewTopic importRandomUserRepliesTopic() {
+    return TopicBuilder.name(IMPORT_RANDOM_USER_REPLIES_TOPIC)
+        .partitions(properties.getPartitions())
+        .build();
   }
 }
